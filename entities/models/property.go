@@ -54,7 +54,7 @@ type Property struct {
 	Name string `json:"name,omitempty"`
 
 	// The properties of the nested object(s). Applies to object and object[] data types.
-	Properties []*Property `json:"properties"`
+	NestedProperties []*NestedProperty `json:"nestedProperties"`
 
 	// Determines tokenization of the property as separate words or whole field. Optional. Applies to text and text[] data types. Allowed values are `word` (default; splits on any non-alphanumerical, lowercases), `lowercase` (splits on white spaces, lowercases), `whitespace` (splits on white spaces), `field` (trims). Not supported for remaining data types
 	// Enum: [word lowercase whitespace field]
@@ -65,7 +65,7 @@ type Property struct {
 func (m *Property) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateProperties(formats); err != nil {
+	if err := m.validateNestedProperties(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -79,22 +79,22 @@ func (m *Property) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Property) validateProperties(formats strfmt.Registry) error {
-	if swag.IsZero(m.Properties) { // not required
+func (m *Property) validateNestedProperties(formats strfmt.Registry) error {
+	if swag.IsZero(m.NestedProperties) { // not required
 		return nil
 	}
 
-	for i := 0; i < len(m.Properties); i++ {
-		if swag.IsZero(m.Properties[i]) { // not required
+	for i := 0; i < len(m.NestedProperties); i++ {
+		if swag.IsZero(m.NestedProperties[i]) { // not required
 			continue
 		}
 
-		if m.Properties[i] != nil {
-			if err := m.Properties[i].Validate(formats); err != nil {
+		if m.NestedProperties[i] != nil {
+			if err := m.NestedProperties[i].Validate(formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("properties" + "." + strconv.Itoa(i))
+					return ve.ValidateName("nestedProperties" + "." + strconv.Itoa(i))
 				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce.ValidateName("properties" + "." + strconv.Itoa(i))
+					return ce.ValidateName("nestedProperties" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
@@ -157,7 +157,7 @@ func (m *Property) validateTokenization(formats strfmt.Registry) error {
 func (m *Property) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.contextValidateProperties(ctx, formats); err != nil {
+	if err := m.contextValidateNestedProperties(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -167,16 +167,16 @@ func (m *Property) ContextValidate(ctx context.Context, formats strfmt.Registry)
 	return nil
 }
 
-func (m *Property) contextValidateProperties(ctx context.Context, formats strfmt.Registry) error {
+func (m *Property) contextValidateNestedProperties(ctx context.Context, formats strfmt.Registry) error {
 
-	for i := 0; i < len(m.Properties); i++ {
+	for i := 0; i < len(m.NestedProperties); i++ {
 
-		if m.Properties[i] != nil {
-			if err := m.Properties[i].ContextValidate(ctx, formats); err != nil {
+		if m.NestedProperties[i] != nil {
+			if err := m.NestedProperties[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("properties" + "." + strconv.Itoa(i))
+					return ve.ValidateName("nestedProperties" + "." + strconv.Itoa(i))
 				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce.ValidateName("properties" + "." + strconv.Itoa(i))
+					return ce.ValidateName("nestedProperties" + "." + strconv.Itoa(i))
 				}
 				return err
 			}
